@@ -30,11 +30,8 @@ public class SwerveModule {
 		this.config = config;
 	}
 
-	public void drive(SwerveModuleState initialTargetState) {
-		SwerveModuleState targetState = SwerveModuleState.optimize(
-			initialTargetState, 
-			getModuleState().angle
-		);
+	public void drive(SwerveModuleState targetState) {
+		targetState.optimize(getModuleState().angle);
 		setModuleVelocity(
 			targetState.speedMetersPerSecond * 
             // Scale velocity by how far wheel is from target

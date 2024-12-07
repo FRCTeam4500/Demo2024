@@ -181,7 +181,8 @@ public class ExtendedMath {
 		boolean continuousRotation
 	) {
 		if (continuousRotation) {
-			return SwerveModuleState.optimize(desiredState, currentAngle);
+			desiredState.optimize(currentAngle);
+			return desiredState;
 		}
 		double originalAngle = currentAngle.getDegrees();
 		double delta = MathUtil.inputModulus(

@@ -10,11 +10,14 @@ import com.ctre.phoenix6.configs.Slot1Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
-import com.revrobotics.CANSparkMax;
+import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.config.SparkMaxConfig;
 
 import static frc.robot.CANConstants.*;
 import static com.ctre.phoenix6.signals.InvertedValue.*;
-import static com.revrobotics.CANSparkLowLevel.MotorType.*;
+import static com.revrobotics.spark.SparkLowLevel.MotorType.*;
+import static com.revrobotics.spark.SparkBase.ResetMode.*;
+import static com.revrobotics.spark.SparkBase.PersistMode.*;
 
 public class SwerveConstants {
     /** Drive rotations per motor rotation */
@@ -49,8 +52,12 @@ public class SwerveConstants {
         );
     public static final SwerveMotor FRONT_LEFT_ANGLE_MOTOR =
         SwerveMotor.fromSparkMax(
-            new CANSparkMax(SWERVE_FRONT_LEFT_ANGLE_ID, kBrushless),
-            motor -> motor.getPIDController().setP(0.7)
+            new SparkMax(SWERVE_FRONT_LEFT_ANGLE_ID, kBrushless),
+            motor -> {
+                SparkMaxConfig config = new SparkMaxConfig();
+                config.closedLoop.p(0.7);
+                motor.configure(config, kResetSafeParameters, kPersistParameters);
+            }
         );
     public static final SwerveModuleConfig FRONT_LEFT_MODULE_CONFIG = new SwerveModuleConfig(
         new Translation2d(0.2974, 0.2974), 0.1016, 1/7.5, 1/6.75
@@ -65,8 +72,12 @@ public class SwerveConstants {
         );
     public static final SwerveMotor FRONT_RIGHT_ANGLE_MOTOR =
         SwerveMotor.fromSparkMax(
-            new CANSparkMax(SWERVE_FRONT_RIGHT_ANGLE_ID, kBrushless),
-            motor -> motor.getPIDController().setP(0.8)
+            new SparkMax(SWERVE_FRONT_RIGHT_ANGLE_ID, kBrushless),
+            motor -> {
+                SparkMaxConfig config = new SparkMaxConfig();
+                config.closedLoop.p(0.8);
+                motor.configure(config, kResetSafeParameters, kPersistParameters);
+            }
         );
     public static final SwerveModuleConfig FRONT_RIGHT_MODULE_CONFIG = new SwerveModuleConfig(
         new Translation2d(0.2974, -0.2974), 0.1016, 1/7.5, 1/6.75
@@ -81,8 +92,12 @@ public class SwerveConstants {
         );
     public static final SwerveMotor BACK_LEFT_ANGLE_MOTOR =
         SwerveMotor.fromSparkMax(
-            new CANSparkMax(SWERVE_BACK_LEFT_ANGLE_ID, kBrushless),
-            motor -> motor.getPIDController().setP(0.75)
+            new SparkMax(SWERVE_BACK_LEFT_ANGLE_ID, kBrushless),
+            motor -> {
+                SparkMaxConfig config = new SparkMaxConfig();
+                config.closedLoop.p(0.75);
+                motor.configure(config, kResetSafeParameters, kPersistParameters);
+            }
         );
     public static final SwerveModuleConfig BACK_LEFT_MODULE_CONFIG = new SwerveModuleConfig(
         new Translation2d(-0.2974, 0.2974), 0.1016, 1/7.5, 1/6.75
@@ -97,8 +112,12 @@ public class SwerveConstants {
         );
     public static final SwerveMotor BACK_RIGHT_ANGLE_MOTOR =
         SwerveMotor.fromSparkMax(
-            new CANSparkMax(SWERVE_BACK_RIGHT_ANGLE_ID, kBrushless),
-            motor -> motor.getPIDController().setP(0.8)
+            new SparkMax(SWERVE_BACK_RIGHT_ANGLE_ID, kBrushless),
+            motor -> {
+                SparkMaxConfig config = new SparkMaxConfig();
+                config.closedLoop.p(0.8);
+                motor.configure(config, kResetSafeParameters, kPersistParameters);
+            }
         );
     public static final SwerveModuleConfig BACK_RIGHT_MODULE_CONFIG = new SwerveModuleConfig(
         new Translation2d(-0.2974, -0.2974), 0.1016, 1/7.5, 1/6.75

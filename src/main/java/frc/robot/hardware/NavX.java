@@ -7,23 +7,19 @@
 
 package frc.robot.hardware;
 
-import com.kauailabs.navx.frc.AHRS;
+
+import com.studica.frc.AHRS;
+import com.studica.frc.AHRS.NavXComType;
 
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.wpilibj.SPI.Port;
 import frc.robot.utilities.ExtendedMath;
 
 public class NavX {
 	private AHRS ahrs;
 	private Rotation2d gyroZero;
 
-	public NavX(edu.wpi.first.wpilibj.I2C.Port kmxp) {
-		ahrs = new AHRS(kmxp);
-		gyroZero = new Rotation2d();
-	}
-
-	public NavX(Port kmxp) {
-		ahrs = new AHRS(kmxp);
+	public NavX() {
+		ahrs = new AHRS(NavXComType.kMXP_SPI);
 		gyroZero = new Rotation2d();
 	}
 

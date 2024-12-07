@@ -1,40 +1,58 @@
 package frc.robot.subsystems;
 
-import com.revrobotics.CANSparkBase.ControlType;
-import com.revrobotics.CANSparkBase.IdleMode;
-import com.revrobotics.CANSparkLowLevel.MotorType;
+import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.SparkBase.ControlType;
+import com.revrobotics.spark.SparkBase.PersistMode;
+import com.revrobotics.spark.SparkBase.ResetMode;
+import com.revrobotics.spark.SparkLowLevel.MotorType;
+import com.revrobotics.spark.config.ClosedLoopConfig;
+import com.revrobotics.spark.config.SparkMaxConfig;
+import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-import com.revrobotics.CANSparkMax;
-
 import static frc.robot.CANConstants.*;
 
 public class DemoShooter extends SubsystemBase {
-    private CANSparkMax tiltMotor;
-    private CANSparkMax leftMotor;
-    private CANSparkMax rightMotor;
-    private CANSparkMax loaderMotor;
+    private SparkMax tiltMotor;
+    private SparkMax leftMotor;
+    private SparkMax rightMotor;
+    private SparkMax loaderMotor;
 
     public DemoShooter() {
-        rightMotor = new CANSparkMax(SHOOTER_ONE_ID, MotorType.kBrushless);
-        leftMotor = new CANSparkMax(SHOOTER_TWO_ID, MotorType.kBrushless);
-        tiltMotor = new CANSparkMax(SHOOTER_PIVOT_ID, MotorType.kBrushless);
-        loaderMotor = new CANSparkMax(LOADER_ID, MotorType.kBrushless);
+        rightMotor = new SparkMax(SHOOTER_ONE_ID, MotorType.kBrushless);
+        leftMotor = new SparkMax(SHOOTER_TWO_ID, MotorType.kBrushless);
+        loaderMotor = new SparkMax(LOADER_ID, MotorType.kBrushless);
 
-        rightMotor.getPIDController().setP(0.3);
-        tiltMotor.getPIDController().setP(3);
-        tiltMotor.getPIDController().setOutputRange(-0.5, 0.3);
-        tiltMotor.setIdleMode(IdleMode.kCoast);
+        tiltMotor = new SparkMax(SHOOTER_PIVOT_ID, MotorType.kBrushless);
+        SparkMaxConfig tiltConfig = new SparkMaxConfig();
+        tiltConfig
+            .idleMode(IdleMode.kCoast)
+            .smartCurrentLimit(30)
+            .apply(new ClosedLoopConfig()
+                .p(3)
+                .outputRange(-0.5, 0.3)
+            );
+        tiltMotor.configure(tiltConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
-        loaderMotor.setIdleMode(IdleMode.kBrake);
+        loaderMotor = new SparkMax(LOADER_ID, MotorType.kBrushless);
+        SparkMaxConfig loaderConfig = new SparkMaxConfig();
+        loaderConfig
+            .idleMode(IdleMode.kBrake)
+            .smartCurrentLimit(40);
+        loaderMotor.configure(loaderConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
-        rightMotor.setSmartCurrentLimit(30);
-        leftMotor.setSmartCurrentLimit(30);
-        tiltMotor.setSmartCurrentLimit(30);
-        loaderMotor.setSmartCurrentLimit(40);
+        rightMotor = new SparkMax(SHOOTER_ONE_ID, MotorType.kBrushless);
+        SparkMaxConfig rightConfig = new SparkMaxConfig();
+        rightConfig.smartCurrentLimit(30);
+        rightMotor.configure(rightConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+
+        leftMotor = new SparkMax(SHOOTER_TWO_ID, MotorType.kBrushless);
+        SparkMaxConfig leftConfig = new SparkMaxConfig();
+        leftConfig.smartCurrentLimit(30);
+        leftMotor.configure(leftConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     }
 
     public Command startIntake() {
@@ -54,7 +72,7 @@ public class DemoShooter extends SubsystemBase {
                 rightMotor.set(-0.15);
                 leftMotor.set(-0.15);
                 loaderMotor.set(0);
-                tiltMotor.getPIDController().setReference(-7, ControlType.kPosition);
+                tiltMotor.getClosedLoopController().setReference(-7, ControlType.kPosition);
             }
         ).andThen(
             Commands.waitSeconds(0.15)
@@ -71,7 +89,7 @@ public class DemoShooter extends SubsystemBase {
                 rightMotor.set(0);
                 leftMotor.set(0);
                 loaderMotor.set(0);
-                tiltMotor.getPIDController().setReference(-1, ControlType.kPosition);
+                tiltMotor.getClosedLoopController().setReference(-1, ControlType.kPosition);
             }    
         ).andThen(
             Commands.waitSeconds(0.15)

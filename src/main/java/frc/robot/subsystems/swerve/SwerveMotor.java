@@ -5,8 +5,8 @@ import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
-import com.revrobotics.CANSparkMax;
-import com.revrobotics.CANSparkBase.ControlType;
+import com.revrobotics.spark.SparkBase.ControlType;
+import com.revrobotics.spark.SparkMax;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 
@@ -43,14 +43,14 @@ public interface SwerveMotor {
         };
     }
 
-    public static SwerveMotor fromSparkMax(CANSparkMax motor, Consumer<CANSparkMax> config) {
+    public static SwerveMotor fromSparkMax(SparkMax motor, Consumer<SparkMax> config) {
         config.accept(motor);
         return new SwerveMotor() {
             public void setAngle(Rotation2d target) {
-                motor.getPIDController().setReference(target.getRotations(), ControlType.kPosition);
+                motor.getClosedLoopController().setReference(target.getRotations(), ControlType.kPosition);
             }
             public void setAngularVelocity(Rotation2d target) {
-                motor.getPIDController().setReference(target.getRotations() * 60, ControlType.kVelocity);
+                motor.getClosedLoopController().setReference(target.getRotations() * 60, ControlType.kVelocity);
             }
             public Rotation2d getAngle() {
                 return Rotation2d.fromRotations(motor.getEncoder().getPosition());

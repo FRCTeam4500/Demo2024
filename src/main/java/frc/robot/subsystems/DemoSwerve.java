@@ -8,7 +8,6 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
-import edu.wpi.first.wpilibj.SPI.Port;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -26,7 +25,7 @@ public class DemoSwerve extends SubsystemBase {
     private Rotation2d targetAngle;
 
     public DemoSwerve() {
-        gyro = new NavX(Port.kMXP);
+        gyro = new NavX();
         modules = new SwerveModule[] {
             new SwerveModule(
 				FRONT_LEFT_DRIVE_MOTOR,
@@ -92,15 +91,15 @@ public class DemoSwerve extends SubsystemBase {
 		if (DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red) {
 			addition = Rotation2d.fromDegrees(180);
 		}
-        ChassisSpeeds targetChassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(
+        ChassisSpeeds targetChassisSpeeds = new ChassisSpeeds(
             forwardVelocity,
             sidewaysVelocity,
-            calculateRotationalVelocityToTarget(targetAngle),
-            gyro.getOffsetedAngle().plus(addition)
-
+            calculateRotationalVelocityToTarget(targetAngle)
         );
+		targetChassisSpeeds.toRobotRelativeSpeeds(gyro.getOffsetedAngle().plus(addition));
+		targetChassisSpeeds.discretize(0.02);
 		SwerveModuleState[] states = kinematics.toSwerveModuleStates(
-			ChassisSpeeds.discretize(targetChassisSpeeds, 0.02)
+			targetChassisSpeeds
 		);
 		SwerveDriveKinematics.desaturateWheelSpeeds(
 			states,
